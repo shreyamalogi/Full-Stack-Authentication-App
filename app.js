@@ -4,8 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-// https://www.npmjs.com/package/mongoose-encryption
-const encrypt = require("mongoose-encryption");
+//https://www.npmjs.com/package/md5
+const md5 = require("md5");
 
 const app = express();
 
@@ -22,11 +22,6 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String
 });
-
-//docs convient method
-const secret = "thisismysecret"
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] }); //plugin b4 model
-
 
 //mongoose model
 const modelUser = mongoose.model("User", userSchema);
@@ -51,7 +46,7 @@ app.get("/register", function(req, res) {
 app.post("/register", function(req, res) {
     const newUser = new modelUser({
         email: req.body.username,
-        password: req.body.password
+        password: md5(req.body.password) //md5  (hashing the password at the time of registering)
     });
     newUser.save(function(err) {
         if (err) {
@@ -65,7 +60,7 @@ app.post("/register", function(req, res) {
 
 app.post("/login", function(req, res) {
     const username = req.body.username;
-    const password = req.body.password;
+    const password = md5(req.body.password); //comparing the user password has with the hash which is stored in our db
 
     //to look thru our collection of users 
     //where our email field(where our db is there) is matching with our username field(from the user whoxz trying to login)
