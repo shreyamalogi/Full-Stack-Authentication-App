@@ -1,6 +1,6 @@
-
 body {
-  background-color: #E8ECEF;
+    background: rgb(242, 232, 15);
+    background: linear-gradient(90deg, rgba(242, 232, 15, 1) 0%, rgba(21, 8, 244, 1) 0%, rgba(209, 36, 208, 1) 100%);
 }
 
 .centered {
@@ -9,8 +9,8 @@ body {
 }
 
 .secret-text {
-  text-align: center;
-  font-size: 2rem;
-  color: #fff;
-  background-color: #000;
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #000;
 }

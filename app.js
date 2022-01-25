@@ -49,7 +49,8 @@ mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
 const userSchema = new mongoose.Schema({
     email: String,
     password: String,
-    googleId: String
+    googleId: String,
+    secret: String
 });
 
 //passport plugin 
@@ -94,6 +95,7 @@ passport.use(new GoogleStrategy({
 
 
 //////////////////////////////////////////////////////                  get                 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 app.get("/", function(req, res) {
     res.render("home");
 });
@@ -121,12 +123,25 @@ app.get("/register", function(req, res) {
 
 
 app.get("/secrets", function(req, res) {
+    modelUser.find({ "secret": { $ne: null } }, function(err, foundUsers) { //looks thru all of our users and check for secret field and picks up tye secret field which is not equal to nukll
+        if (err) {
+            console.log(err)
+        } else {
+            if (foundUsers) {
+                res.render("secrets", { usersWithSecrets: foundUsers });
+            }
+        }
+    });
+
+});
+
+
+app.get("/submit", function(req, res) {
     if (req.isAuthenticated) {
-        res.render("secrets");
+        res.render("submit");
     } else {
         res.redirect("/login");
     }
-
 });
 
 
@@ -136,7 +151,10 @@ app.get('/logout', function(req, res) {
 });
 
 
+
 //////////////////////////////////////////////////                      post               //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 app.post("/register", function(req, res) {
     //passport js code
     modelUser.register({ username: req.body.username }, req.body.password, function(err, user) {
@@ -170,6 +188,27 @@ app.post("/login", function(req, res) {
                 res.redirect("/secrets");
             });
         }
+
+    });
+});
+
+
+
+app.post("/submit", function(req, res) {
+    const submittedSecret = req.body.secret;
+    console.log(req.user.id);
+
+    modelUser.findById(req.user.id, function(err, foundUser) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundUser) {
+                foundUser.secret = submittedSecret;
+                foundUser.save(function() {
+                    res.redirect("/");
+                })
+            }
+        };
 
     });
 });
