@@ -1,8 +1,11 @@
 //jshint esversion:6
 
+//////////////////////////////////////////////////////////////////require the packages ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const env = require("dotenv").config();
 const mongoose = require("mongoose");
 //https://www.npmjs.com/package/express-session
 const session = require('express-session');
@@ -10,8 +13,15 @@ const session = require('express-session');
 const passport = require("passport");
 //https://www.npmjs.com/package/passport-local-mongoose
 const passportLocalMongoose = require("passport-local-mongoose");
+//https://www.passportjs.org/packages/passport-google-oauth20/
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+//https://www.npmjs.com/package/mongoose-findorcreate
+const findOrCreate = require('mongoose-findorcreate')
 
 const app = express();
+
+///////////////////////////////////////////////////////////                 app.use and app.set explicit codes         /////////////////////////////////////////////////////////////////////////////////////////////
+
 
 //sessions from express sessions
 app.use(session({
@@ -24,23 +34,28 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+//ejs 
 app.set('view engine', 'ejs');
+
+//expressjs 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-////////////////////////////////////////////////////////--------------database  and encryption            //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////--------------         database, plugins  and encryption            //////////////////////////////////////////////////////////////////////////////////////////
 //mongodb connection 
 mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
 
 //mongoose schema for items, in which the object is created from mongoose schema class
 const userSchema = new mongoose.Schema({
     email: String,
-    password: String
+    password: String,
+    googleId: String
 });
 
 //passport plugin 
 userSchema.plugin(passportLocalMongoose);
+//find o create plugin 
+userSchema.plugin(findOrCreate);
 
 //mongoose model
 const modelUser = mongoose.model("User", userSchema);
@@ -48,10 +63,34 @@ const modelUser = mongoose.model("User", userSchema);
 //passport config
 passport.use(modelUser.createStrategy());
 
-passport.serializeUser(modelUser.serializeUser());
-passport.deserializeUser(modelUser.deserializeUser());
+//passport js serialize and deserailize
+passport.serializeUser(function(user, cb) {
+    process.nextTick(function() {
+        cb(null, { id: user.id, username: user.username });
+    });
+});
 
+passport.deserializeUser(function(user, cb) {
+    process.nextTick(function() {
+        return cb(null, user);
+    });
+});
 
+//GOOGLE OAUTH2.0
+passport.use(new GoogleStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: "http://localhost:3000/auth/google/secrets",
+        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo" //got this from github issues
+    },
+    function(accessToken, refreshToken, profile, cb) {
+        console.log(profile);
+
+        modelUser.findOrCreate({ googleId: profile.id }, function(err, user) {
+            return cb(err, user);
+        });
+    }
+));
 
 
 //////////////////////////////////////////////////////                  get                 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +98,17 @@ app.get("/", function(req, res) {
     res.render("home");
 });
 
+
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ["profile"] })
+); //pop up ,,,,use passport to authenticate our user for google stratedgy
+
+app.get('/auth/google/secrets',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('/secrets');
+    });
 
 app.get("/login", function(req, res) {
     res.render("login");
