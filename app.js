@@ -4,8 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-//https://www.npmjs.com/package/md5
-const md5 = require("md5");
+//https://www.npmjs.com/package/bcrypt
+const bcrypt = require('bcrypt');
+const saltRounds = 15;
 
 const app = express();
 
@@ -43,25 +44,28 @@ app.get("/register", function(req, res) {
 
 
 //////////////////////////////////////////////////                      post               //////////////////////////////////////////////////////////////////////////////////////////////////////
-app.post("/register", function(req, res) {
-    const newUser = new modelUser({
-        email: req.body.username,
-        password: md5(req.body.password) //md5  (hashing the password at the time of registering)
+app.post("/register", function(req, res) { //bcrypt package implimentation
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        const newUser = new modelUser({
+            email: req.body.username,
+            password: hash
+        });
+
+        //saving our new user into db
+        newUser.save(function(err) {
+            if (err) {
+                console.log(err)
+            } else {
+                res.render("secrets");
+            }
+        });
     });
-    newUser.save(function(err) {
-        if (err) {
-            console.log(err)
-        } else {
-            res.render("secrets"); //there is no forward slash cuz we dont want to render unless the user registers
-        }
-    })
 
 });
 
 app.post("/login", function(req, res) {
     const username = req.body.username;
-    const password = md5(req.body.password); //comparing the user password has with the hash which is stored in our db
-
+    const password = (req.body.password);
     //to look thru our collection of users 
     //where our email field(where our db is there) is matching with our username field(from the user whoxz trying to login)
     modelUser.findOne({ email: username }, function(err, foundUser) {
@@ -69,13 +73,17 @@ app.post("/login", function(req, res) {
             console.log(err)
         } else {
             if (foundUser) {
-                if (foundUser.password === password) {
-                    res.render("secrets");
-                }
+                bcrypt.compare(password, foundUser.password, function(err, result) {
+                    if (result === true) {
+                        res.render("secrets");
+                    }
+                });
+
             }
         }
     });
 });
+
 
 
 
