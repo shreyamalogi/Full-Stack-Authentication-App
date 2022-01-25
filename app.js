@@ -4,6 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+// https://www.npmjs.com/package/mongoose-encryption
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -11,15 +13,20 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-////////////////////////////////////////////////////////--------------database              //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////--------------database  and encryption            //////////////////////////////////////////////////////////////////////////////////////////
 //mongodb connection 
 mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
 
-//mongoose schema for items
-const userSchema = ({
+//mongoose schema for items, in which the object is created from mongoose schema class
+const userSchema = new mongoose.Schema({
     email: String,
     password: String
 });
+
+//docs convient method
+const secret = "thisismysecret"
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] }); //plugin b4 model
+
 
 //mongoose model
 const modelUser = mongoose.model("User", userSchema);
