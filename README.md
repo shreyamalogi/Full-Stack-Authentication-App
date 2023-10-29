@@ -11,21 +11,14 @@
 
 # Table of Contents ✍️
 
-1) [Introduction](#introduction-)
-
-2) [Challenges Faced during Authentication Evolution](#challenges-faced-during-authentication-evolution-%EF%B8%8F)
-
+1. [Introduction](#introduction-)
+2. [Challenges Faced during Authentication Evolution](#challenges-faced-during-authentication-evolution-%EF%B8%8F)
 3. [Dependencies](#dependencies-)
-
-5. [Navigating Project Evolution](#navigating-project-evolution)
-
-6. [How to Run](#how-to-run-)
-
-7. [How to Start from Scratch](#how-you-can-make-from-scratch)
-
-8. [License](#license-%EF%B8%8F)
-
-9. [Contribution](#contribution---show-your-support-star-this-)
+4. [Navigating Project Evolution](#navigating-project-evolution)
+5. [How to Run](#how-to-run-)
+6. [How to Start from Scratch](#how-you-can-make-from-scratch)
+7. [License](#license-%EF%B8%8F)
+8. [Contribution](#contribution---show-your-support-star-this-)
 
 
 ---
