@@ -1,15 +1,15 @@
 # Full-Stack Authentication App:
 
-[![GitHub stars](https://img.shields.io/github/stars/[shreyamalogi]/[Full-Stack-Authentication-App].svg?style=social)](https://github.com/[shreyamalogi]/[Full-Stack-Authentication-App]/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/shreyamalogi/Full-Stack-Authentication-App.svg?style=social)](https://github.com/shreyamalogi/Full-Stack-Authentication-App/stargazers)
 
-### Project Details: 💻🌐📅✍️
+### Project Details: 💻🌐📅
 
-- **Functionality:** Implements user authentication using Passport.js with local and Google OAuth 2.0 strategies.
-- **Tech Stack:** `Node.js`, `Express.js`, `MongoDB`, `Passport.js`, `EJS`, `CSS`
-- **Author:** [@shreyamalogi](https://github.com/shreyamalogi/)
-- **Year of Project:** 2022
+- **Functionality:** Implements user authentication using Passport.js with local and Google OAuth 2.0 strategies. 🛡️🌐
+- **Tech Stack:** `Node.js`, `Express.js`, `MongoDB`, `Passport.js`, `EJS`, `CSS` 🚀💻
+- **Author:** [@shreyamalogi](https://github.com/shreyamalogi/) 👩‍💻
+- **Year of Project:** 2022 📅
 
-# Table of Contents
+# Table of Contents ✍️
 
 1) [Introduction](#introduction-)
 
@@ -59,8 +59,8 @@ This is a Node.js web application built by **Shreya Malogi** with Express.js, Mo
 - **[dotenv](https://www.npmjs.com/package/dotenv)**: Loads environment variables from a `.env` file. 🔒
 - **[express-session](https://www.npmjs.com/package/express-session)**: Session middleware for Express.js. 🕐
 - **[passport](http://www.passportjs.org/)**: Simple, unobtrusive authentication middleware for Node.js. 🛡️
-- **[passport-local-mongoose](https://www.npmjs.com/package/passport-local-mongoose)**: Passport.js plugin for simplifying username and password authentication. 🤝
-- **[passport-google-oauth20](http://www.passportjs.org/packages/passport-google-oauth20/)**: Passport.js strategy for authenticating with Google using OAuth 2.0.🌐🔑
+- **[passport-local-mongoose](https://www.npmjs.com/package/passport-local-mongoose)**: Passport.js plugin for simplifying username and password auth. 🤝
+- **[passport-google-oauth20](http://www.passportjs.org/packages/passport-google-oauth20/)**: Passport.js for authenticating with Google using OAuth 2.0.🌐
 - **[mongoose-findorcreate](https://www.npmjs.com/package/mongoose-findorcreate)**: Mongoose plugin for simplifying the `findOneOrCreate` operation. 🔄
 
 
